@@ -1,8 +1,6 @@
 
-def adjust_parameters_by_environment(temperature, r, K):
-    if temperature > 37:
-        r *= 0.9  # Slower growth in higher temperatures
-        K *= 0.8
-    elif temperature < 35:
-        r *= 1.1  # Faster growth in colder temperatures
-    return r, K
+def adjust_growth_rate_based_on_temperature(r, temperature):
+    """Adjusts growth rate based on environmental temperature."""
+    optimal_temp = 37  # Ideal human body temperature in Celsius
+    adjustment_factor = 0.01  # Rate change per degree deviation
+    return r * (1 - adjustment_factor * abs(optimal_temp - temperature))

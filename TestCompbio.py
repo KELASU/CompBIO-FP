@@ -1,85 +1,45 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.animation import FuncAnimation
 
-# Parameters
-N0 = 1e7  # Initial tumor size
-K = 1e9   # Carrying capacity
-r = 0.2   # Growth rate
-time_steps = 100  # Total time steps
+# Parameters for the organ (approximating it as an ellipsoid for simplicity)
+a, b, c = 10, 7, 5  # axes lengths of the organ (e.g., lung, brain)
 
-def logistic_growth(N0, r, K, t):
-    return K / (1 + (K / N0 - 1) * np.exp(-r * t))
+# Number of tumor points
+n_points = 3000
 
-def gompertz_growth(N0, r, K, t):
-    return K * np.exp(-np.exp(r * (np.log(K / N0) - t)))
+# Simulate non-uniform tumor growth using spherical coordinates
+theta = np.random.uniform(0, 2 * np.pi, n_points)
+phi = np.random.uniform(0, np.pi, n_points)
 
-time = np.linspace(0, 50, time_steps)
-tumor_sizes_logistic = logistic_growth(N0, r, K, time)
-tumor_sizes_gompertz = gompertz_growth(N0, r, K, time)
+# Radial growth pattern with varying growth rates
+r = np.random.uniform(1, 3, n_points)  # Random radial distances (non-uniform)
+r_growth = (r ** 2) * np.random.uniform(0.5, 1.5, n_points)  # Variable growth factor
 
-max_size = np.max([tumor_sizes_logistic, tumor_sizes_gompertz])
-normalized_sizes_logistic = (tumor_sizes_logistic / max_size) * 10
-normalized_sizes_gompertz = (tumor_sizes_gompertz / max_size) * 10
+# Spherical to Cartesian conversion
+x = r_growth * np.sin(phi) * np.cos(theta)
+y = r_growth * np.sin(phi) * np.sin(theta)
+z = r_growth * np.cos(phi)
 
-def create_sphere(radius):
-    u = np.linspace(0, 2 * np.pi, 50)
-    v = np.linspace(0, np.pi, 50)
-    x = radius * np.outer(np.cos(u), np.sin(v))
-    y = radius * np.outer(np.sin(u), np.sin(v))
-    z = radius * np.outer(np.ones(np.size(u)), np.cos(v))
-    return x, y, z
+# Scale the tumor points to fit within the organ's boundary
+x = x * a / np.max(np.abs(x))
+y = y * b / np.max(np.abs(y))
+z = z * c / np.max(np.abs(z))
 
-fig = plt.figure(figsize=(12, 6))
-ax1 = fig.add_subplot(121, projection='3d')
-ax2 = fig.add_subplot(122, projection='3d')
+# Create a 3D plot
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
 
-for ax in [ax1, ax2]:
-    ax.set_xlim([-12, 12])
-    ax.set_ylim([-12, 12])
-    ax.set_zlim([-12, 12])
+# Plot the tumor points with a bulging effect
+ax.scatter(x, y, z, color='yellow', s=20, alpha=0.6)
 
-ax1.set_title("Logistic Growth")
-ax2.set_title("Gompertz Growth")
+# Set labels
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
 
-def init():
-    ax1.cla()
-    ax2.cla()
-    ax1.set_title("Logistic Growth")
-    ax1.set_xlim([-12, 12])
-    ax1.set_ylim([-12, 12])
-    ax1.set_zlim([-12, 12])
-    ax2.set_title("Gompertz Growth")
-    ax2.set_xlim([-12, 12])
-    ax2.set_ylim([-12, 12])
-    ax2.set_zlim([-12, 12])
-    return []
+# Set the viewing angle for better visualization of the 3D effect
+ax.view_init(30, 30)
 
-def update(frame):
-    ax1.cla() 
-    ax2.cla() 
-
-    # Reset titles and limits
-    ax1.set_title("Logistic Growth")
-    ax1.set_xlim([-12, 12])
-    ax1.set_ylim([-12, 12])
-    ax1.set_zlim([-12, 12])
-
-    ax2.set_title("Gompertz Growth")
-    ax2.set_xlim([-12, 12])
-    ax2.set_ylim([-12, 12])
-    ax2.set_zlim([-12, 12])
-
-    x, y, z = create_sphere(normalized_sizes_logistic[frame])
-    ax1.plot_surface(x, y, z, color='blue', alpha=0.7)
-    
-    x, y, z = create_sphere(normalized_sizes_gompertz[frame])
-    ax2.plot_surface(x, y, z, color='red', alpha=0.7)
-
-    return []
-
-ani = FuncAnimation(fig, update, frames=len(time), init_func=init, interval=100)
-
+# Show plot
 plt.show()
-

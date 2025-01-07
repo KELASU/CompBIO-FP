@@ -1,0 +1,19 @@
+Results for Sample Unnamed: 2:
+  Logistic Model R²: 0.9541, MSE: 9229.7848
+  Gompertz Model R²: 0.9547, MSE: 9110.7015
+
+Results for Sample Unnamed: 3:
+  Logistic Model R²: 0.9990, MSE: 550.9874
+  Gompertz Model R²: 0.9988, MSE: 693.4285
+
+Gompertz fit failed for Sample Unnamed: 4: Optimal parameters not found: Number of calls to function has reached maxfev = 10000.
+Results for Sample Unnamed: 5:
+  Logistic Model R²: 0.9923, MSE: 4085.9720
+  Gompertz Model R²: 0.9920, MSE: 4249.1193
+
+Gompertz fit failed for Sample Unnamed: 6: Optimal parameters not found: Number of calls to function has reached maxfev = 10000.
+Gompertz fit failed for Sample Unnamed: 7: Optimal parameters not found: Number of calls to function has reached maxfev = 10000.
+Results for Sample Unnamed: 8:
+  Logistic Model R²: 0.9973, MSE: 1854.5551
+  Gompertz Model R²: 0.9981, MSE: 1267.2488
+
